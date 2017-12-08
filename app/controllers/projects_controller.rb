@@ -1,6 +1,13 @@
 class ProjectsController < ApplicationController
-  before_action :require_login, only: [:new, :create]
+  before_action :require_login, only: [:new, :create
+  #v2 attempt by omair 
+  validates_numericality_of :start_date, :greater_than => :created_at
+  #v3 attempt by omair
+  validates_numericality_of :end_date, :greater_than => :start_date
+  #v4 attempt by omair
+   validates_numericality_of :goal, :greater_than => 0
 
+  require :
   def index
     @projects = Project.all
     @projects = @projects.order(:end_date)

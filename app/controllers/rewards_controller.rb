@@ -1,5 +1,7 @@
 class RewardsController < ApplicationController
   before_action :load_project
+  #v5 attempt by omair
+  validates_numericality_of :dollar_amount, :greater_than => 0
 
   def new
     @reward = Reward.new
