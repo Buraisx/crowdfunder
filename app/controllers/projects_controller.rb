@@ -58,7 +58,16 @@ class ProjectsController < ApplicationController
     @project.end_date = params[:project][:end_date]
     @project.image = params[:project][:image]
     @project.user_id = current_user.id
-
+    @category = Category.new
+    @category.name = params[:project][:category]
+    Category.all.each do |category|
+      if category.name == params[:project][:category]
+        @project.category_id = category.id
+      else
+        @category.save
+        @project.category_id = @category.id
+      end
+    end
     if @project.save
       redirect_to projects_url
     else
