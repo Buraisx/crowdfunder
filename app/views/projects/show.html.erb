@@ -51,7 +51,7 @@
   <%= f.submit "Pledge" %>
 <% end %>
 
-<% if @pledge_status%>
+<% if current_user.id == @project.user_id%>
   <h2>Who has pledged your project?</h2>
   <% @pledges.each do |pledger|%>
     <p><%= link_to pledger.user.first_name, user_path(pledger.id)%></p>
@@ -63,13 +63,21 @@
   <p><%= number_to_currency(reward.dollar_amount) %></p>
   <p><%= reward.description %></p>
   <p># available: <%= reward.amount%> | claimed: <%= reward.claimed %></p>
+
+  <% if @user_total_pledges >= reward.dollar_amount%>
+    <%= form_for [@project, reward] do |f| %>
+      <p><%= f.submit "Claim" %></p>
+    <% end %>
+  <% end %>
+
   <p>
-    <% if !@pledge_status %>
+    <% if current_user.id == @project.user_id %>
     <small>
       <%= link_to "Edit", edit_project_reward_path(@project, reward)%> | <%= link_to "Remove reward", project_reward_path(@project, reward), method: 'delete' %>
     </small>
     <% end %>
   </p>
 <% end %>
-
-<%= link_to "Add new reward", new_project_reward_path(@project) %>
+<% if current_user.id == @project.user_id %>
+  <%= link_to "Add new reward", new_project_reward_path(@project) %>
+<% end %>
