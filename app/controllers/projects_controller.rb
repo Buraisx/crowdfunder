@@ -22,7 +22,7 @@ class ProjectsController < ApplicationController
         pledges_for_project = Pledge.where(project_id: i)
         pledges_for_project.each do |pledge|
           total_pledged += pledge.dollar_amount
-          if total_pledged == project.goal
+          if total_pledged >= project.goal
             @finished_backing += 1
           end
         end
