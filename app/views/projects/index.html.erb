@@ -2,7 +2,10 @@
 
 <div>
   <div>
+<!-- ======= Below if required or search will fail ======= -->
+    <% if !params[:search] %>
     <h2><%= @projects.count%> projects started.</h2>
+    <% end %>
   </div>
   <div>
 <!-- ======= Below if required or search will fail ======= -->
@@ -12,24 +15,41 @@
 
   </div>
   <div>
+    <% if !params[:search] %>
     <h2><%= @finished_backing%> have completed funding.</h2>
+    <% end %>
   </div>
 </div>
 
-<% @projects.each do |project| %>
-  <article class="project">
-    <%= link_to project, class: 'project-link' do %>
-      <figure class="project-image">
-        <% if project.image %>
-          <%= image_tag project.image %>
-        <% else %>
-          <%= image_tag ActionController::Base.helpers.asset_path("default.jpg") %>
-        <% end %>
-      </figure>
-      <h1 class="project-title"><%= project.title %></h1>
-      <time class="project-days-left">
-        <%= icon('clock-o') %>
-        <%= "#{time_ago_in_words(project.end_date)} #{( project.end_date > Time.now.utc ) ? 'remaining' : 'past deadline'}" %></time>
-    <% end %>
-  </article>
+<% if !params[:search] %>
+  <% @projects.each do |project| %>
+    <article class="project">
+      <%= link_to project, class: 'project-link' do %>
+        <figure class="project-image">
+          <% if project.image %>
+            <%= image_tag project.image %>
+          <% else %>
+            <%= image_tag ActionController::Base.helpers.asset_path("default.jpg") %>
+          <% end %>
+        </figure>
+        <h1 class="project-title"><%= project.title %></h1>
+        <time class="project-days-left">
+          <%= icon('clock-o') %>
+          <%= "#{time_ago_in_words(project.end_date)} #{( project.end_date > Time.now.utc ) ? 'remaining' : 'past deadline'}" %></time>
+
+      <% end %>
+    </article>
+  <% end %>
+<% else %>
+  <% @projects.each do |project| %>
+    <article class="project">
+      <%= link_to project, class: 'project-link' do %>
+        <h1 class="project-title"><%= project.title %></h1>
+        <time class="project-days-left">
+          <%= icon('clock-o') %>
+          <%= "#{time_ago_in_words(project.end_date)} #{( project.end_date > Time.now.utc ) ? 'remaining' : 'past deadline'}" %></time>
+         <h2>Category: <%= project.category.name %></h2>
+      <% end %>
+    </article>
+  <% end %>
 <% end %>

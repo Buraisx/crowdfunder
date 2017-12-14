@@ -1,5 +1,11 @@
-<h1><%= @project.title %></h1>
-<h3>By: <%=link_to @project.user.first_name, user_path(@project.user_id) %></h3>
+<article class="project">
+    <h1 class="project-title"><%= @project.title %></h1>
+    <h3>By: <%=link_to @project.user.first_name, user_path(@project.user_id) %></h3>
+
+    <time class="project-days-left">
+      <%= icon('clock-o') %>
+      <%= "#{time_ago_in_words(@project.end_date)} #{( @project.end_date > Time.now.utc ) ? 'remaining' : 'past deadline'}" %></time>
+</article>
 
 <% if @project.image.present? %>
   <%= image_tag @project.image %>
@@ -9,7 +15,7 @@
 <!-- Update section -->
   <h2>Updates</h2>
   <% @project.updates.reverse.each do |update| %>
-    <p><%= update.description%> 
+    <p><%= update.description%>
       <small><%= update.created_at.strftime("%A %b %d %Y")  %></small></p>
   <% end %>
 
@@ -19,11 +25,11 @@
     <p><%= f.submit "Update" %></p>
   <% end %>
 <% end %>
-  
+
 <!-- Comments -->
 <h2>Comments</h2>
   <% @project.comments.reverse.each do |comment| %>
-    <p><%= comment.text%> 
+    <p><%= comment.text%>
       <small><%= comment.created_at.strftime("%A %b %d %Y")  %></small></p>
   <% end %>
 
@@ -45,6 +51,8 @@
 <% if @pledge_status %>
   <p>You have already backed this project.</p>
 <% end %>
+
+
 
 <%= form_for [@project, Pledge.new] do |f| %>
   <%= f.number_field :dollar_amount, value: @project.rewards.minimum(:dollar_amount), step: 0.01 %>

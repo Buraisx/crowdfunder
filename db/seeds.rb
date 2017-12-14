@@ -3,6 +3,12 @@ Reward.destroy_all
 User.destroy_all
 Project.destroy_all
 
+User.create(first_name: "Gus", last_name: "Jaker", email: "gusjaker@gus.gus", password: "12345678", password_confirmation: "12345678")
+category_array = ["Techno", "Puppies", "Fungi", "Cereal", "Eyepatches", "Magic" ]
+
+category_array.each do |categor|
+  Category.create!(name: categor)
+end
 
 10.times do
   User.create!(
@@ -15,29 +21,31 @@ Project.destroy_all
 end
 
 10.times do |x|
+  user = User.all.sample
+  category = Category.all.sample
   project = Project.create!(
               title: Faker::App.name,
               description: Faker::Lorem.paragraph,
               goal: rand(100000),
-              start_date: Time.now.utc - rand(60).days,
+              start_date: Time.now.utc,
               end_date: Time.now.utc + rand(10).days,
-              user_id: x + 1
+              user_id: user.id,
+              category_id: category.id
             )
 
   5.times do
     project.rewards.create!(
       description: Faker::Superhero.power,
-      dollar_amount: rand(100),
+      dollar_amount: 1 + rand(100),
     )
   end
 end
 
 20.times do
   project = Project.all.sample
-
   Pledge.create!(
-    user: User.all.sample,
+    user: (User.all - [project.user]).sample,
     project: project,
-    dollar_amount: project.rewards.sample.dollar_amount + rand(10)
+    dollar_amount: project.rewards.sample.dollar_amount + rand(10) + 1
   )
 end

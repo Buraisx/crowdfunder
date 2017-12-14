@@ -5,13 +5,14 @@ class Project < ActiveRecord::Base
   has_many :comments
   has_many :users, through: :pledges # backers
   belongs_to :user # project owner
+  belongs_to :category
 
   validates :title, :description, :goal, :start_date, :end_date, :user_id, presence: true
 
 
   #============= Validation 2, 3, 4  ===============
-  # validate :start_date_cannot_be_in_the_past
-  # validate :end_date_cannot_be_after_start_date
+   validate :start_date_cannot_be_in_the_past
+  validate :end_date_cannot_be_after_start_date
   validates :goal, numericality: { only_integer: true, greater_than: 0 }
 
 
@@ -31,7 +32,7 @@ class Project < ActiveRecord::Base
 
   #============= Search Bar  ===============
   def self.search(search)
-    where("title LIKE ? OR description LIKE ? ", "%#{search}%", "%#{search}%")
+    where("title iLIKE ?", "%#{search}%")
   end
 
 end

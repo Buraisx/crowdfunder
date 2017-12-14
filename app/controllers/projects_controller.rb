@@ -6,7 +6,9 @@ class ProjectsController < ApplicationController
   #============= Does Normal Index if no Search Bar  ===============
   def index
     if params[:search]
-      @projects = Project.search(params[:search]).order("created_at DESC")
+      @projects = Project.search(params[:search])
+      @projects += Category.search_projects(params[:search])
+      @projects = @projects.sort_by(&:created_at)
     else
       @projects = Project.all
       @projects = @projects.order(:end_date)
@@ -39,7 +41,7 @@ class ProjectsController < ApplicationController
     # Pledge_status is the status where you have pledged on this project
     @pledges.each do |pledge|
       @total_pledged += pledge.dollar_amount
-      if current_user.id == pledge.user_id
+      if current_user && current_user.id == pledge.user_id
         @pledge_status = true
         @user_total_pledges += pledge.dollar_amount
       end
@@ -61,7 +63,16 @@ class ProjectsController < ApplicationController
     @project.end_date = params[:project][:end_date]
     @project.image = params[:project][:image]
     @project.user_id = current_user.id
-
+    @category = Category.new
+    @category.name = params[:project][:category]
+    Category.all.each do |category|
+      if category.name == params[:project][:category]
+        @project.category_id = category.id
+      else
+        @category.save
+        @project.category_id = @category.id
+      end
+    end
     if @project.save
       redirect_to projects_url
     else
