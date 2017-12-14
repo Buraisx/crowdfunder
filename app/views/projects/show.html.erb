@@ -59,7 +59,7 @@
   <%= f.submit "Pledge" %>
 <% end %>
 
-<% if current_user.id == @project.user_id%>
+<% if current_user == @project.user%>
   <h2>Who has pledged your project?</h2>
   <% @pledges.each do |pledger|%>
     <p><%= link_to pledger.user.first_name, user_path(pledger.id)%></p>
@@ -79,13 +79,13 @@
   <% end %>
 
   <p>
-    <% if current_user.id == @project.user_id %>
+    <% if current_user == @project.user %>
     <small>
       <%= link_to "Edit", edit_project_reward_path(@project, reward)%> | <%= link_to "Remove reward", project_reward_path(@project, reward), method: 'delete' %>
     </small>
     <% end %>
   </p>
 <% end %>
-<% if current_user.id == @project.user_id %>
+<% if current_user == @project.user %>
   <%= link_to "Add new reward", new_project_reward_path(@project) %>
 <% end %>

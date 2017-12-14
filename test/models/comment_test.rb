@@ -1,7 +1,8 @@
-require 'test_helper'
+require_relative '../test_helper'
 
 class CommentTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "text is required" do
+  	comment = build(:comment, text: nil)
+    assert comment.invalid?
+  end
 end
