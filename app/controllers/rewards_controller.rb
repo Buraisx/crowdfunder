@@ -23,9 +23,18 @@ class RewardsController < ApplicationController
 
   def update
     @reward = Reward.find(params[:id])
-    @reward.dollar_amount = params[:reward][:dollar_amount]
-    @reward.description = params[:reward][:description]
-    @reward.amount = params[:reward][:amount]
+    @project = Project.find(params[:project_id])
+
+    if current_user.id == @project.user_id
+      @reward.dollar_amount = params[:reward][:dollar_amount]
+      @reward.description = params[:reward][:description]
+      @reward.amount = params[:reward][:amount]
+    else
+      if @reward.amount > @reward.claimed
+           @reward.claimed += 1
+      end
+    end
+    
 
     if @reward.save
       redirect_to project_url(@project), notice: 'Reward Updated'
@@ -33,6 +42,7 @@ class RewardsController < ApplicationController
       render :edit
     end
   end
+
 
   def destroy
     @reward = Reward.find(params[:id])
